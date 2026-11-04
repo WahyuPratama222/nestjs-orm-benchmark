@@ -1,0 +1,22 @@
+# Dependencies dan hasil build lokal
+node_modules
+dist
+
+# Version control
+.git
+
+# Environment dan data sensitif
+.env
+.env.*
+
+# File pengujian dan benchmark yang tidak diperlukan dalam image API
+reference
+results
+scripts
+k6
+
+# Database initialization files
+db
+
+# Log
+*.log
