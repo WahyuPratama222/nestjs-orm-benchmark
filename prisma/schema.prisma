@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model BookCategory {
+  id    Int    @id @default(autoincrement())
+  name  String @db.VarChar(100)
+  books Book[]
+
+  @@map("book_category")
+}
+
+model Book {
+  id         Int          @id @default(autoincrement())
+  title      String       @db.VarChar(200)
+  author     String       @db.VarChar(100)
+  categoryId Int          @map("category_id")
+  stock      Int          @default(0)
+  category   BookCategory @relation(fields: [categoryId], references: [id])
+  loans      Loan[]
+
+  @@index([categoryId], map: "idx_book_category")
+  @@map("book")
+}
+
+model LibraryUser {
+  id    Int    @id @default(autoincrement())
+  name  String @db.VarChar(100)
+  email String @db.VarChar(150)
+  loans Loan[]
+
+  @@map("library_user")
+}
+
+model Loan {
+  id         Int         @id @default(autoincrement())
+  bookId     Int         @map("book_id")
+  userId     Int         @map("user_id")
+  loanedAt   DateTime    @map("loaned_at") @db.Timestamp(6)
+  returnedAt DateTime?   @map("returned_at") @db.Timestamp(6)
+  book       Book        @relation(fields: [bookId], references: [id])
+  user       LibraryUser @relation(fields: [userId], references: [id])
+
+  @@index([bookId], map: "idx_loan_book")
+  @@index([userId], map: "idx_loan_user")
+  @@map("loan")
+}
